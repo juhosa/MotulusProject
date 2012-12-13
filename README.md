@@ -1,4 +1,4 @@
 MotulusProject
 ==============
 
-School project.
+School project. Quick and dirty.
