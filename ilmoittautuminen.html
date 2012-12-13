@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB"> 
+<head> 
+	<title>Motulus</title> 
+	<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" /> 
+	<meta name="robots" content="index, follow" /> 
+	<link rel="stylesheet" type="text/css" href="screen.css" media="screen" />
+	<script src="jquery-1.5.2.min.js"></script>
+	<script src="scripts.js"></script>
+</head> 
+ 
+<body> 
+ 
+<div id="header"> 
+	<div id="header-menu"> 
+		<img src="logo.png" alt="Motulus" />
+		<a href="index.html" title="">Etusivu</a> 
+		<a href="hops.html" title="">HOPS</a> 
+		<a href="ilmoittautuminen.html" title="ilmoittautuminen">ilmoittaudu</a> 
+		<a href="asetukset.html" title="">Asetukset</a> 
+	</div> 
+</div> 
+<div class="colmask rightmenu"> 
+	<div class="colleft"> 
+		<div class="col1"> 
+			<!-- Column 1 start --> 
+			<div id="lasnaolo">
+				<table id="lasnaolotbl">
+					<tr>
+						<td></td>
+						<td><strong>Läsnä</strong></td>
+						<td><strong>Poissa</strong></td>
+					</tr>
+					<tr>
+						<td>Kevät 2011</td>
+						<td><input type="checkbox" id="lasna1"></td>
+						<td><input type="checkbox" id="poissa1"></td>
+					</tr>
+					<tr>
+						<td>Syksy 2011</td>
+						<td><input type="checkbox" id="lasna2"></td>
+						<td><input type="checkbox" id="poissa2"></td>
+					</tr>
+					<tr>
+						<td>Kevät 2012</td>
+						<td><input type="checkbox" id="lasna3"></td>
+						<td><input type="checkbox" id="poissa3"></td>
+					</tr>
+					<tr>
+						<td>Syksy 2012</td>
+						<td><input type="checkbox" id="lasna4"></td>
+						<td><input type="checkbox" id="poissa4"></td>
+					</tr>
+					
+				</table>
+			</div>
+
+			<div id="kurssit">
+				<table id="kurssittbl">
+					<tr>
+						<td><strong>Kurssin nimi</strong></td>
+						<td><strong>Opettaja</strong></td>
+						<td><strong>Laajuus</strong></td>
+						<td><strong>Ilmoittaudu</strong></td>
+					</tr>
+					<tr>
+						<td>Ohjelmointi</td>
+						<td>Hans Nieminen</td>
+						<td>10</td>
+						<td><input type="checkbox" id="ilmo1"></td>
+					</tr>
+					<tr>
+						<td>Web-käyttöliittymän suunnittelu</td>
+						<td>Juha Stenfors</td>
+						<td>5</td>
+						<td><input type="checkbox" id="ilmo1"></td>
+					</tr>
+					<tr>
+						<td>Web-järjestelmän ohjelmointi</td>
+						<td>Hans Nieminen</td>
+						<td>10</td>
+						<td><input type="checkbox" id="ilmo1"></td>
+					</tr>
+					<tr>
+						<td>Ohjelmistotuotanto</td>
+						<td>Antti Koivisto</td>
+						<td>3</td>
+						<td><input type="checkbox" id="ilmo1"></td>
+					</tr>
+					<tr>
+						<td>Tietokannan suunnittelu</td>
+						<td>Hans Nieminen</td>
+						<td>10</td>
+						<td><input type="checkbox" id="ilmo1"></td>
+					</tr>
+					<tr>
+						<td>Olioajattelu</td>
+						<td>Jari Kyngäs</td>
+						<td>10</td>
+						<td><input type="checkbox" id="ilmo1"></td>
+					</tr>
+					<tr>
+						<td>Tiedon esittäminen</td>
+						<td>joku random</td>
+						<td>10</td>
+						<td><input type="checkbox" id="ilmo1"></td>
+					</tr>
+					<tr>
+						<td>Tietoverkko</td>
+						<td>Jukka Grönholm</td>
+						<td>10</td>
+						<td><input type="checkbox" id="ilmo1"></td>
+					</tr>
+
+				</table>
+			</div>
+	
+			<!-- Column 1 end --> 
+		</div> 
+		<div class="col2"> 
+			<!-- Column 2 start --> 
+ 			<select name="valintaLista" id="valinta" onChange="$(this).GetValue();">
+				<option value="Läsnäolo">Läsnäolo</option>
+				<option value="Kurssit">Kurssit</option>
+				<option value="Tentit">Tentit</option>
+			</select>
+			<!-- Column 2 end --> 
+		</div> 
+	</div> 
+</div> 
+<div id="footer"> 
+	<p>&copy; codename Motulus 2011</p> 
+</div> 
+</body> 
+</html> 
