@@ -2,89 +2,85 @@
 /*
 +--------------------------------------------------------------------------
 |
-|	Tänne kaikki teeman palaset
+|	OMG! IT is PORN ! Just Joking. Kaikki apu funktiot yms tännepäin.
 |
 +--------------------------------------------------------------------------
 */
 
-class motulus_templates {
-	private $content;
+class motulus_utils {
+	// Alustetaan luokan tarvitsemat muuttujat
+	private $host;
+	private $dbname;
+	private $username;
+	private $password;
+	private $connection;
+	private $query;
 
-	function Header($title) {
-		echo <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
-<head>
-	<title>Motulus - $title</title>
-	<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
-	<meta name="robots" content="index, follow" />
-	<link rel="stylesheet" type="text/css" href="styles/screen.css" media="screen" />
-</head>
- 
-<body> 
 
-EOF;
+	function motulus_utils() {
+		private $host = "";
+		private $dbname = "";
+		private $username = "";
+		private $password = "";
 	}
 
-	function Navigation($currentMenu) {
-		echo <<<EOF
-<div id="header">
-	<div id="header-menu">
-		<img src="logo.png" alt="Motulus" />
-		<a href="index.html" title="">Etusivu</a>
-		<a href="hops.html" title="">HOPS</a>
-		<a href="ilmoittautuminen.html" title="ilmoittautuminen">ilmoittaudu</a>
-		<a href="asetukset.html" title="">Asetukset</a>
-	</div>
-</div>
-
-<div class="colmask rightmenu">
-	<div class="colleft">  
-EOF;
-		if($currentMenu == "HOPS") {
-			echo <<<EOF
-		<div class="col1">
-			<!-- Column 1 start -->
-			 
-			<!-- Column 1 end -->
-		</div>
-		<div class="col2">
-			<!-- Column 2 start -->
-			 
-			<!-- Column 2 end -->
-		</div> 
-EOF;
+	// Pyrkii avaamaan ja alustamaan yhteyden.
+	function sql_OpenConnection() {
+		try {
+		    $connection = new PDO("mysql:host=".$host.";dbname=".$dbname, $username, $password);
+		} catch (PDOException $e) {
+		    die("VIRHE: " . $e->getMessage());
 		}
 
-		echo <<<EOF
-	</div>
-</div> 
-EOF;
+		// Muodostetaan poikkeus jos tapahtuu virhe
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		// Merkistöt kuntoon
+		$connection->exec("SET NAMES latin1");
 	}
 
-	function Content() {
-		echo $content;
+	function sql_NextRow() {
+		if($query) {
+			return $query->fetch();
+		}
 	}
 
-	function $footer() {
-		echo <<<EOF
-<div id="footer">
-	<p>&copy; codename Motulus 2011</p>
-</div>
-</body>
-</html> 
-EOF;
+	function sql_AllRows() {
+		if($query) {
+			return $query->fetchAll();
+		}
 	}
 
-	function PrintPage($title, $currentMenu) {
-		$this->Header($title);
-		$this->Navigation($currentMenu);
-		$this->Content();
-		$this->Footer();
+	function sql_AffectedRows() {
+		if($query) {
+			return $query->rowCount();
+		}
 	}
 
-	function PrintContent() {
-		echo $content;
+	function sql_RowCount() {
+		return count($query->fetchAll());
+	}
+
+
+	function sql_Kysely1($esimekkimuuttuja) {
+		try {
+			$query = $connection->prepare("SELECT * FROM tuotteet WHERE hinta = ?");
+			$query->execute(array(3));
+		} catch (PDOException $e) {
+		    die("VIRHE: " . $e->getMessage());
+		}
+	}
+
+	function input($name, $type = "get") {
+		if($type == "get") {
+			return $_GET[$name];
+		}else {
+			return $_POST[$name];
+		}
+	}
+
+
+	function GetUserdata() {
+		// Tarkastaa onko käyttäjä kirjautunut ja asettaa käyttäjän tiedot johonkin muuttujaan.
 	}
 
 }
