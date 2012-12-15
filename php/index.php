@@ -2,7 +2,7 @@
 /*
 +--------------------------------------------------------------------------
 |
-|  Tänne tulee suurinosa koodista
+|	Tänne lähes kaikki koodi
 |
 +--------------------------------------------------------------------------
 */
@@ -13,7 +13,7 @@ class Motulus {
 	function Motulus() {
 		require "utils.php";
 		$this->utils = new utils();
-		$this->utils->GetUserdate();
+		$this->utils->GetUserdata();
 
 		if($this->utils->CurrentUser == null) {
 			$this->PageLogin();
