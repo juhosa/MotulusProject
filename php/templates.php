@@ -2,85 +2,120 @@
 /*
 +--------------------------------------------------------------------------
 |
-|	OMG! IT is PORN ! Just Joking. Kaikki apu funktiot yms tännepäin.
+|	Tänne kaikki teeman palaset
 |
 +--------------------------------------------------------------------------
 */
 
-class motulus_utils {
-	// Alustetaan luokan tarvitsemat muuttujat
-	private $host;
-	private $dbname;
-	private $username;
-	private $password;
-	private $connection;
-	private $query;
+class templates {
+	private $content;
 
+	function Headeri($title) {
+		echo <<<EOF
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
+<head>
+	<title>Motulus - $title</title>
+	<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+	<meta name="robots" content="index, follow" />
+	<link rel="stylesheet" type="text/css" href="styles/screen.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="styles/login-style.css" media="screen" />
+</head>
+ 
+<body> 
 
-	function motulus_utils() {
-		private $host = "";
-		private $dbname = "";
-		private $username = "";
-		private $password = "";
+EOF;
 	}
 
-	// Pyrkii avaamaan ja alustamaan yhteyden.
-	function sql_OpenConnection() {
-		try {
-		    $connection = new PDO("mysql:host=".$host.";dbname=".$dbname, $username, $password);
-		} catch (PDOException $e) {
-		    die("VIRHE: " . $e->getMessage());
-		}
+	function Navigation($currentMenu) {
+		if($currentMenu != "notLoggedIn") {
+			echo <<<EOF
+<div id="header">
+	<div id="header-menu">
+		<img src="logo.png" alt="Motulus" />
+		<a href="index.html" title="">Etusivu</a>
+		<a href="hops.html" title="">HOPS</a>
+		<a href="ilmoittautuminen.html" title="ilmoittautuminen">ilmoittaudu</a>
+		<a href="asetukset.html" title="">Asetukset</a>
+		<a href="index.php?op=logout" title="">ULOS</a>
+	</div>
+</div>
 
-		// Muodostetaan poikkeus jos tapahtuu virhe
-		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		// Merkistöt kuntoon
-		$connection->exec("SET NAMES latin1");
-	}
+<div class="colmask rightmenu">
+	<div class="colleft">  
+EOF;
+			if($currentMenu == "HOPS") {
+				echo <<<EOF
+		<div class="col1">
+			<!-- Column 1 start -->
+			 
+			<!-- Column 1 end -->
+		</div>
+		<div class="col2">
+			<!-- Column 2 start -->
+			 
+			<!-- Column 2 end -->
+		</div> 
+EOF;
+			}
 
-	function sql_NextRow() {
-		if($query) {
-			return $query->fetch();
-		}
-	}
-
-	function sql_AllRows() {
-		if($query) {
-			return $query->fetchAll();
-		}
-	}
-
-	function sql_AffectedRows() {
-		if($query) {
-			return $query->rowCount();
-		}
-	}
-
-	function sql_RowCount() {
-		return count($query->fetchAll());
-	}
-
-
-	function sql_Kysely1($esimekkimuuttuja) {
-		try {
-			$query = $connection->prepare("SELECT * FROM tuotteet WHERE hinta = ?");
-			$query->execute(array(3));
-		} catch (PDOException $e) {
-		    die("VIRHE: " . $e->getMessage());
+			echo <<<EOF
+	</div>
+</div> 
+EOF;
 		}
 	}
 
-	function input($name, $type = "get") {
-		if($type == "get") {
-			return $_GET[$name];
-		}else {
-			return $_POST[$name];
-		}
+	function Content() {
+		echo $this->content;
 	}
 
+	function Footer() {
+		echo <<<EOF
+<div id="footer">
+	<p>&copy; codename Motulus 2011</p>
+</div>
+</body>
+</html> 
+EOF;
+	}
 
-	function GetUserdata() {
-		// Tarkastaa onko käyttäjä kirjautunut ja asettaa käyttäjän tiedot johonkin muuttujaan.
+	function PrintPage($title, $currentMenu) {
+		$this->Headeri($title);
+		$this->Navigation($currentMenu);
+		$this->Content();
+		$this->Footer();
+	}
+
+	function Login() {
+		$this->content = <<<EOF
+<div id="main">
+		<img src="images/logo.png" id="logo" />
+		<form name="input" action="index.php?op=login" method="POST">
+			<input type="hidden" name="tryLogin" value="ofc" />
+			<div class="input-bg">
+				<input type="text" size="39" name="username" value="K&auml;ytt&auml;j&auml;tunnus" />
+			</div>
+			<div class="input-bg">
+				<input type="text" size="39" name="password" value="Salasana" />
+			</div>
+
+			<div id="submit-bg">
+				<input type="submit" value="">
+			</div>
+		</div>
+	</div>
+EOF;
+	}
+
+	function PrintContent() {
+		echo $content;
+	}
+
+	function InsertContent($content) {
+		$this->content = <<<EOF
+$content
+EOF;
 	}
 
 }
