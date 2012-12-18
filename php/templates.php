@@ -27,8 +27,12 @@ class templates {
 EOF;
 	}
 
-	function Navigation($currentMenu) {
-		if($currentMenu != "notLoggedIn") {
+	function Navigation($currentMenu, $currentUser) {
+		if($currentUser['kayttajaTaso'] != 0) {
+			$hallinta = "";
+			if($currentUser['kayttajaTaso'] == 4) {
+				$hallinta = '<a href="index.php?op=hallinta" title="">Hallinta</a>';
+			}
 			echo <<<EOF
 <div id="header">
 	<div id="header-menu">
@@ -37,6 +41,7 @@ EOF;
 		<a href="hops.html" title="">HOPS</a>
 		<a href="ilmoittautuminen.html" title="ilmoittautuminen">ilmoittaudu</a>
 		<a href="asetukset.html" title="">Asetukset</a>
+		$hallinta
 		<a href="index.php?op=logout" title="">ULOS</a>
 	</div>
 </div>
@@ -57,6 +62,8 @@ EOF;
 			<!-- Column 2 end -->
 		</div> 
 EOF;
+			}elseif($currentMenu == "CP") {
+				echo $this->NavigationCP();
 			}
 
 			echo <<<EOF
@@ -64,6 +71,19 @@ EOF;
 </div> 
 EOF;
 		}
+	}
+
+	function NavigationCP() {
+		return <<<EOF
+		<div class="col1">
+			<a href="index.php?op=hallinta&subop=kayttajat" title="">Käyttäjät</a><br/>
+			<a href="index.php?op=hallinta&subop=toteutukset" title="">Toteutukset</a><br/>
+			<a href="index.php?op=hallinta&subop=kurssit" title="">Kurssit</a><br/>
+			<a href="index.php?op=hallinta&subop=moduulit" title="">Moduulit</a><br/>
+			<a href="index.php?op=hallinta&subop=koulutusohjelmat" title="">Koulutusohjelmat</a><br/>
+			<a href="index.php?op=hallinta&subop=toimipisteet" title="">Toimipisteet</a><br/>
+		</div>
+EOF;
 	}
 
 	function Content() {
@@ -80,15 +100,15 @@ EOF;
 EOF;
 	}
 
-	function PrintPage($title, $currentMenu) {
+	function PrintPage($title, $currentMenu, $currentUser) {
 		$this->Headeri($title);
-		$this->Navigation($currentMenu);
+		$this->Navigation($currentMenu, $currentUser);
 		$this->Content();
 		$this->Footer();
 	}
 
 	function Login() {
-		$this->content = <<<EOF
+		$this->content .= <<<EOF
 <div id="main">
 		<img src="images/logo.png" id="logo" />
 		<form name="input" action="index.php?op=login" method="POST">
@@ -108,12 +128,8 @@ EOF;
 EOF;
 	}
 
-	function PrintContent() {
-		echo $content;
-	}
-
 	function InsertContent($content) {
-		$this->content = <<<EOF
+		$this->content .= <<<EOF
 $content
 EOF;
 	}
