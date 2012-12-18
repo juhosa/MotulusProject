@@ -77,7 +77,7 @@ class utils {
 	/////////////////////////////////////////////////
 	function sql_query_SelectLoginPasswordSalt($id) {
 		try {
-			$this->query = $this->connection->prepare("SELECT password, salt FROM motulus.LoginData WHERE id = ?");
+			$this->query = $this->connection->prepare("SELECT LD.password, LD.salt, H.etunimi, H.sukunimi, H.kayttajaTaso FROM motulus.LoginData as LD JOIN motulus.Henkilo as H ON LD.id = H.henkiloId WHERE LD.id = ?");
 			$this->query->execute(array($id));
 		} catch (PDOException $e) {
 		    die("VIRHE: " . $e->getMessage());
@@ -105,6 +105,66 @@ class utils {
 		}
 	}
 
+	//////////////////////////////////////////////////
+	//	CP:n tarvitsemat kyselyt
+	/////////////////////////////////////////////////
+	function sql_query_SelectUsers() {
+		try {
+			$this->query = $this->connection->prepare("SELECT henkiloId, etunimi, sukunimi, puhelin, kayttajaTaso, email, toimipisteId  FROM motulus.Henkilo ORDER BY sukunimi, etunimi");
+			$this->query->execute();
+		} catch (PDOException $e) {
+		    die("VIRHE: " . $e->getMessage());
+		}
+	}
+
+	function sql_query_SelectUser($id) {
+		try {
+			$this->query = $this->connection->prepare("SELECT henkiloId, etunimi, sukunimi, puhelin, kayttajaTaso, email, toimipisteId  FROM motulus.Henkilo WHERE henkiloId = ?");
+			$this->query->execute(array($id));
+		} catch (PDOException $e) {
+		    die("VIRHE: " . $e->getMessage());
+		}
+	}
+
+	function sql_query_UpdateUser($values) {
+		try {
+			$this->query = $this->connection->prepare("UPDATE motulus.Henkilo SET etunimi = ?, sukunimi = ?, puhelin = ?, kayttajaTaso = ?, email = ?, toimipisteId = ? WHERE etunimi = ? AND sukunimi = ? AND puhelin = ? AND kayttajaTaso = ? AND email = ? AND toimipisteId = ? AND henkiloId = ?");
+			$this->query->execute($values);
+		} catch (PDOException $e) {
+		    die("VIRHE: " . $e->getMessage());
+		}
+	}
+
+	function sql_query_AddUser($values1, $values2) {
+		try {
+			$this->query = $this->connection->prepare("SELECT MAX(henkiloId) + 1 as ID FROM motulus.Henkilo");
+			$this->query->execute();
+		} catch (PDOException $e) {
+			die("VIRHE1: " . $e->getMessage());
+		}
+		$row = $this->sql_NextRow();
+		array_unshift($values1, $row['ID']);
+		array_unshift($values2, $row['ID']);
+		try {
+			$this->query = $this->connection->prepare("INSERT INTO motulus.Henkilo ( henkiloId, etunimi, sukunimi, puhelin, kayttajaTaso, email, toimipisteId) VALUES (?, ?, ?, ?, ?, ?, ?)");
+			$this->query->execute($values1);
+		} catch (PDOException $e) {
+			die("VIRHE2: " . $e->getMessage());
+		}
+
+		try {
+			$this->query = $this->connection->prepare("INSERT INTO motulus.LoginData ( id, password, salt ) VALUES (?, ?, ?)");
+			$this->query->execute($values2);
+		} catch (PDOException $e) {
+			die("VIRHE3: " . $e->getMessage());
+		}
+
+		return $row['ID'];
+		
+	}
+
+
+
 	function input($name, $type = "get") {
 		if($type == "get") {
 			return $_GET[$name];
@@ -113,8 +173,13 @@ class utils {
 		}
 	}
 
+
 	// Tarkastaa onko käyttäjä kirjautunut ja asettaa käyttäjän tiedot johonkin muuttujaan.
 	function GetUserdata() {
+		$this->CurrentUser['etunimi'] = null;
+		$this->CurrentUser['sukunimi'] = null;
+		$this->CurrentUser['nimi'] = null;
+		$this->CurrentUser['kayttajaTaso'] = 0;
 		if(isset($_SESSION['user_id'], $_SESSION['login_magic'])) {
 			$user_id = $_SESSION['user_id'];
 			$login_string = $_SESSION['login_magic'];
@@ -124,7 +189,10 @@ class utils {
 			$row = $this->sql_NextRow();
 			if($row["password"]) {
 				if(hash('sha512', $row["password"].$ip_address.$user_browser) == $login_string) {
-					$this->CurrentUser = $user_id;
+					$this->CurrentUser['etunimi'] = $row['etunimi'];
+					$this->CurrentUser['sukunimi'] = $row['sukunimi'];
+					$this->CurrentUser['nimi'] = $row['etunimi'] . " " . $row['sukunimi'];
+					$this->CurrentUser['kayttajaTaso'] = $row['kayttajaTaso'];
 					$this->loggedIn = true;
 				}
 			}
